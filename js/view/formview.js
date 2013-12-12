@@ -50,7 +50,14 @@ var FormView = Backbone.View.extend(
 				author: this.model.get('author'),
 				text: this.model.get('text')
 			};
+			var obj=this;
 			this.$el.html(Mustache.to_html(template, template_vars));
+			this.$el.find('.author').bind('input', function(){
+						obj.model.set({changed: 1});
+			});
+			this.$el.find('.text').bind('input', function(){
+				obj.model.set({changed:1});
+			});
 			return this;
 		},
 	
@@ -59,11 +66,14 @@ var FormView = Backbone.View.extend(
 		 * Sets new values from form on model, triggers a success event and cleans up the form
 		 * @returns {Boolean} Returns false to stop propagation
 		 */
+	
+	
 		submit: function () {
 			// set values from form on model
 			this.model.set({
 				author: this.$el.find('.author').val(),
-				text: this.$el.find('.text').val()
+				text: this.$el.find('.text').val(),
+				changed: 0
 			});
 			
 			// set an id if model was a new instance
@@ -85,9 +95,28 @@ var FormView = Backbone.View.extend(
 		* Cleans up form view from DOM
 		* @returns {Boolean} Returns false to stop propagation
 		*/
+		/*
+		MinTing
+		Function defined for confirmation before user canceling form input
+		*/
+		// Minting
+		confirmation: function(){
+			 if (this.model.get('changed'))
+			{
+				var a=window.confirm('Changes are made, are you sure you want to cancel?');
+				return a;
+				
+			}
+		},
+
+
 		cancel: function () {
+			// MinTing: modification for Question 1
 			// clean up form
-			this.remove();
+			if (this.confirmation())
+			{
+			this.remove();				
+			}
 			return false;
 		},
 		
@@ -96,8 +125,11 @@ var FormView = Backbone.View.extend(
 		 * @returns {Boolean} Returns false to stop propagation
 		 */
 		updateFields: function () {
-			this.$el.find('.author').val(this.model.get('author'));
-			this.$el.find('.text').val(this.model.get('text'));
+			if (!this.model.get('changed'))
+			{
+				this.$el.find('.author').val(this.model.get('author'));
+				this.$el.find('.text').val(this.model.get('text'));
+			}
 			return false;
 		},
 		

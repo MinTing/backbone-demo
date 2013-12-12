@@ -17,6 +17,8 @@ var CommentModel = Backbone.Model.extend(
 			if (this.has('text') && this.get('text').length > 0) {
 				this.set('text', this.get('text').split('').reverse().join(''));
 			}
-		}
+		},
+		// MinTing 
+		changed: 0
 	}
 );
