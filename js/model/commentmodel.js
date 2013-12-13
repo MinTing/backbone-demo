@@ -18,7 +18,6 @@ var CommentModel = Backbone.Model.extend(
 				this.set('text', this.get('text').split('').reverse().join(''));
 			}
 		},
-		// MinTing 
-		changed: 0
+
 	}
 );

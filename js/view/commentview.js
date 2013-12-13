@@ -40,6 +40,7 @@ var CommentView = Backbone.View.extend(
 		 * View init method, subscribing to model events
 		 */
 		initialize: function () {
+			console.log('this is commentview initialize speaking');
 			this.model.on('change', this.render, this);
 			this.model.on('destroy', this.remove, this);
 		},

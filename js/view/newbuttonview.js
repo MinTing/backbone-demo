@@ -34,14 +34,11 @@ var NewButtonView = Backbone.View.extend(
 		createComment: function () {
 			// create new comment model
 			var comment = new CommentModel({});
-		
 			// render form view right after new button
 			var formview = new FormView({model: comment});
 			this.$el.after(formview.render().$el);
-		
 			// add saved model to collection after form was submitted successfully
 			formview.on('success', this.handleFormSuccess, this);
-		
 			// finally, return false to stop event propagation
 			return false;
 		},

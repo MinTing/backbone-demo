@@ -36,6 +36,7 @@ var FormView = Backbone.View.extend(
 		 * View init method, subscribing to model events
 		 */
 		initialize: function () {
+			console.log('this is formview initialize speaking');
 			this.model.on('change', this.updateFields, this);
 			this.model.on('destroy', this.remove, this);
 		},
@@ -50,14 +51,37 @@ var FormView = Backbone.View.extend(
 				author: this.model.get('author'),
 				text: this.model.get('text')
 			};
-			var obj=this;
-			this.$el.html(Mustache.to_html(template, template_vars));
-			this.$el.find('.author').bind('input', function(){
-						obj.model.set({changed: 1});
-			});
-			this.$el.find('.text').bind('input', function(){
-				obj.model.set({changed:1});
-			});
+			var thismodel=this;
+			if ($('.commentform').length==0)
+			{
+				this.$el.html(Mustache.to_html(template, template_vars));
+				this.$el.find('.author').bind('input', function(){
+							thismodel.model.set({changed: 1});
+				});
+				this.$el.find('.text').bind('input', function(){
+				thismodel.model.set({changed:1});
+				});
+				// this.$el.dialog(
+				// 	{
+				// 		title: 'New Comment',
+				// 		height: 250,
+				// 		width: 500,
+				// 		draggable: true,
+				// 		modal: true,
+				// 		autoOpen: false,
+
+				// 	});
+				// element=this.$el;
+				// element.dialog('open');
+				// this.$el.bind('blur', function(){
+				// 	console.log(this.html());
+				// });
+			}
+			else
+			{
+				alert("only one comment form can be opened");
+				return false;
+			}
 			return this;
 		},
 	
@@ -74,7 +98,9 @@ var FormView = Backbone.View.extend(
 				author: this.$el.find('.author').val(),
 				text: this.$el.find('.text').val(),
 				changed: 0
+
 			});
+
 			
 			// set an id if model was a new instance
 			// note: this is usually done automatically when items are stored in an API
@@ -83,13 +109,17 @@ var FormView = Backbone.View.extend(
 			}
 			
 			// trigger the 'success' event on form, with the returned model as the only parameter
+			if (this.model.get('author')=='' || this.model.get('text')=='')
+			{
+				this.model.set({errormsg: true});
+				console.log("errormsg empty field");
+			}
 			this.trigger('success', this.model);
 			
 			// remove form view from DOM and memory
 			this.remove();
 			return false;
 		},
-		
 		/**
 		* Cancel button click handler
 		* Cleans up form view from DOM
@@ -107,15 +137,21 @@ var FormView = Backbone.View.extend(
 				return a;
 				
 			}
+			else
+			{
+				return true;
+			}
 		},
 
 
 		cancel: function () {
 			// MinTing: modification for Question 1
 			// clean up form
-			if (this.confirmation())
+			var a=this.confirmation();
+			console.log(a);
+			if (a)
 			{
-			this.remove();				
+				this.remove();
 			}
 			return false;
 		},

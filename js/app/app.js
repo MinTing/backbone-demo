@@ -20,7 +20,7 @@ var App = Backbone.View.extend(
 		initialize: function () {
 			// create empty comment collection
 			var collection = new CommentCollection();
-		
+			
 			// bind the NewButtonView to the already rendered 'newcomment' DOM element, we'll need to know the
 			// collection to work with so FormView can insert the new comment properly
 			new NewButtonView({collection: collection, el: this.$el.find('.newcomment')});
