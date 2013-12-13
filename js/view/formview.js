@@ -15,6 +15,7 @@ var FormView = Backbone.View.extend(
 		 * variables.
 		 * @type String
 		 */
+
 		tagName: 'div',
 	
 		/**
@@ -37,7 +38,8 @@ var FormView = Backbone.View.extend(
 		 */
 		initialize: function () {
 			console.log('this is formview initialize speaking');
-			this.model.on('change', this.updateFields, this);
+			console.log(this.model.get('author'));
+			this.model.on('change: author, text', this.updateFields, this);
 			this.model.on('destroy', this.remove, this);
 		},
 		
@@ -49,18 +51,25 @@ var FormView = Backbone.View.extend(
 			var template = $('#form-template').text();
 			var template_vars = {
 				author: this.model.get('author'),
-				text: this.model.get('text')
+				text: this.model.get('text'),
 			};
 			var thismodel=this;
 			if ($('.commentform').length==0)
 			{
 				this.$el.html(Mustache.to_html(template, template_vars));
+				this.$el.find('.author')[0].placeholder=this.model.get('author');
+				console.log(this.$el.find('.author')[0].placeholder);
+				console.log(this.model.get('author'));
 				this.$el.find('.author').bind('input', function(){
 							thismodel.model.set({changed: 1});
 				});
 				this.$el.find('.text').bind('input', function(){
 				thismodel.model.set({changed:1});
 				});
+				/*
+					tried with jQuery UI Modal Form
+					haven't got it working properly
+				*/
 				// this.$el.dialog(
 				// 	{
 				// 		title: 'New Comment',
@@ -98,7 +107,6 @@ var FormView = Backbone.View.extend(
 				author: this.$el.find('.author').val(),
 				text: this.$el.find('.text').val(),
 				changed: 0
-
 			});
 
 			
@@ -112,7 +120,6 @@ var FormView = Backbone.View.extend(
 			if (this.model.get('author')=='' || this.model.get('text')=='')
 			{
 				this.model.set({errormsg: true});
-				console.log("errormsg empty field");
 			}
 			this.trigger('success', this.model);
 			
@@ -175,7 +182,6 @@ var FormView = Backbone.View.extend(
 		remove: function () {
 			// unsubscribe from all model events with this context
 			this.model.off(null, null, this);
-			
 			// delete container form DOM
 			this.$el.remove();
 			
